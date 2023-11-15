@@ -1,3 +1,32 @@
 <resources>
     <string name="app_name">ICM-Taller3-LosChimbitas</string>
+
+    <string name="menu_1">Cerrar Sesión</string>
+    <string name="menu_2">Establecer estado</string>
+    <string name="menu_3">Listar usuarios disponibles</string>
+
+    <string name="registro_1">Nombre de usuario</string>
+    <string name="registro_2">Nombre</string>
+    <string name="registro_3">Apellido</string>
+    <string name="registro_4">Correo electrónico</string>
+    <string name="registro_5">Contraseña</string>
+    <string name="registro_6">Registrar</string>
+
+    <string name="iniciar_sesion_1">Nombre de usuario o correo electrónico</string>
+    <string name="iniciar_sesion_2">Contraseña</string>
+    <string name="iniciar_sesion_3">Iniciar Sesión</string>
+    <string name="iniciar_sesion_4">¿Olvidaste tu contraseña?</string>
+
+    <string name="agregar_foto_perfil_1">Cargar Foto</string>
+    <string name="agregar_foto_perfil_2">Tomar foto</string>
+    <string name="agregar_foto_perfil_3">Guardar cambios</string>
+
+    <string name="main_activity_1">Iniciar sesión</string>
+    <string name="main_activity_2">Registrarse</string>
+
+    <!--    Parte de la cámara -->
+    <string name="temp_images_dir">temp_images</string>
+    <string name="temp_image">temp_image.jpg</string>
+    <string name="authorities">com.loschimbitas.taller3.fileprovider</string>
+
 </resources>
