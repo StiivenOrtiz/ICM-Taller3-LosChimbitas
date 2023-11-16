@@ -1,13 +1,13 @@
 package com.loschimbitas.icm_taller3_loschimbitas.modelo
 
 data class Usuario(
-    val numeroAutenticacion: Long,
-    var nombreUsuario: String,
-    var nombre: String,
-    var apellido: String,
-    var correo: String,
-    var contrasena: String,
-    var imagenContacto: String,
-    var latitud: String,
-    var longitud: String
+    val numeroAutenticacion: Long? = null,
+    var nombreUsuario: String? = null,
+    var nombre: String? = null,
+    var apellido: String? = null,
+    var correo: String? = null,
+    var contrasena: String? = null,
+    var imagenContacto: String? = null,
+    var latitud: String? = null,
+    var longitud: String? = null
 )

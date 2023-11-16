@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextUsuario" />
 
     <Button
-        android:id="@+id/btnIniciarSesion"
+        android:id="@+id/btnIniciarSesionMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

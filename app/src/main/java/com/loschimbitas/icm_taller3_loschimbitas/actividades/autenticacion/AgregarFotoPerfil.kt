@@ -93,7 +93,7 @@ class AgregarFotoPerfil : AppCompatActivity() {
 
     private fun iniciarListenerBtnGuardarCambios() {
         binding.btnGuardarCambios.setOnClickListener {
-            userGlobal.imagenContacto = tempImageUri.toString()
+//            userGlobal.imagenContacto = tempImageUri.toString()
             Toast.makeText(this, "Configuration saved", Toast.LENGTH_SHORT).show()
 
             val intent = Intent(this, PantallaPrincipal::class.java)
