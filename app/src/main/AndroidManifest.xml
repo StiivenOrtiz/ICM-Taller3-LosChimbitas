@@ -37,9 +37,6 @@
             android:name=".actividades.principal.PantallaPrincipal"
             android:exported="false" />
         <activity
-            android:name=".actividades.autenticacion.AgregarFotoPerfil"
-            android:exported="false" />
-        <activity
             android:name=".actividades.autenticacion.IniciarSesion"
             android:exported="false" />
         <activity
