@@ -62,11 +62,12 @@ class UserListActivity : AppCompatActivity(), UsuariosConectados.UsuariosConecta
     override fun onUsuariosActualizados() {
         usuariosConectados = UsuariosConectados.getUsuarios()
 
-        Toast.makeText(
-            this,
-            "Usuario conectado ${usuariosConectados.last().nombreUsuario}",
-            Toast.LENGTH_SHORT
-        ).show()
+        if (usuariosConectados.isNotEmpty())
+            Toast.makeText(
+                this,
+                "Usuario conectado ${usuariosConectados.last().nombreUsuario}",
+                Toast.LENGTH_SHORT
+            ).show()
 
         val adapter = UserListAdapter(this, usuariosConectados)
         listViewUsers.adapter = adapter

@@ -24,7 +24,7 @@ class TrackerLocation(application: Application) : AndroidViewModel(application) 
     @SuppressLint("MissingPermission")
     fun requestLocationUpdates() {
         val locationRequest = LocationRequest.create()
-            .setInterval(0)
+            .setInterval(10000)
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
         locationCallback = object : LocationCallback() {

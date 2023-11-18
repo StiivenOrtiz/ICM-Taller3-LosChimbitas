@@ -35,7 +35,8 @@ import com.loschimbitas.icm_taller3_loschimbitas.util.TrackerLocation
 import org.json.JSONObject
 import kotlin.math.roundToInt
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados.UsuariosConectadosObserver {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
+    UsuariosConectados.UsuariosConectadosObserver {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -88,6 +89,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
 
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
+                trackerLocation.stopLocationUpdates()
                 startActivity(intent)
 
                 return true
@@ -164,16 +166,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
             mMap.uiSettings.isZoomControlsEnabled = true
 
 
-            // Obtener la ubicación actual del usuario y agregar un marcador
-            val locationProvider = LocationServices.getFusedLocationProviderClient(this)
-            locationProvider.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    val currentLatLng = LatLng(location.latitude, location.longitude)
-                    mMap.addMarker(MarkerOptions().position(currentLatLng).title("Ubicación Actual"))
-                }
-            }
-
-
             // Obtener el JSON desde el archivo raw
             val inputStream = resources.openRawResource(R.raw.locations)
             val jsonString = inputStream.bufferedReader().use { it.readText() }
@@ -197,7 +189,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
             val lastLatitude = lastLocation.getDouble("latitude")
             val lastLongitude = lastLocation.getDouble("longitude")
             val lastLatLng = LatLng(lastLatitude, lastLongitude)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLatLng, 12.0f))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLatLng, 11.8f))
         }
     }
 
@@ -212,8 +204,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
         markerOptions.draggable(true)
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
         currentUserLocationMarker = mMap.addMarker(markerOptions)
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-        mMap.animateCamera(CameraUpdateFactory.zoomBy(12f))
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+//        mMap.animateCamera(CameraUpdateFactory.zoomBy(5f))
     }
 
     private fun trackUser(){
@@ -231,11 +223,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
     override fun onUsuariosActualizados() {
         // Mostrar un Toast para cada nuevo usuario
         usuariosConectados = UsuariosConectados.getUsuarios()
-        Toast.makeText(
-            this,
-            "Usuario conectado ${usuariosConectados.last().nombreUsuario}",
-            Toast.LENGTH_SHORT
-        ).show()
+        if(usuariosConectados.isNotEmpty())
+            Toast.makeText(
+                this,
+                "Usuario conectado ${usuariosConectados.last().nombreUsuario}",
+                Toast.LENGTH_SHORT
+            ).show()
 
         usuariosConectados.forEach() {
             Log.i("UsuariosConectados", "nombre usuario: ${it.nombreUsuario}")
