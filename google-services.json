@@ -1,13 +1,33 @@
 {
   "project_info": {
-    "project_number": "514428693255",
-    "project_id": "icm-taller3-loschimbitas",
-    "storage_bucket": "icm-taller3-loschimbitas.appspot.com"
+    "project_number": "745475041902",
+    "firebase_url": "https://taller-3-5ed35-default-rtdb.firebaseio.com",
+    "project_id": "taller-3-5ed35",
+    "storage_bucket": "taller-3-5ed35.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:514428693255:android:cf38d32d91267b4aa3b3a2",
+        "mobilesdk_app_id": "1:745475041902:android:1446dfaee943ad0706547f",
+        "android_client_info": {
+          "package_name": "com.example.taller3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY52VLJzf44XXfDqGJbVZYJZqUaulq_dE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745475041902:android:8c36711c9570987c06547f",
         "android_client_info": {
           "package_name": "com.loschimbitas.icm_taller3_loschimbitas"
         }
@@ -15,7 +35,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAQAaxFBfla_uG1rDRROKMVQ4IiquMEuZ4"
+          "current_key": "AIzaSyAY52VLJzf44XXfDqGJbVZYJZqUaulq_dE"
         }
       ],
       "services": {
