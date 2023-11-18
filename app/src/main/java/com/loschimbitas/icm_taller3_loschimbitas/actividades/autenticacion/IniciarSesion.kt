@@ -105,7 +105,7 @@ class IniciarSesion : AppCompatActivity() {
 
             Toast.makeText(
                 baseContext,
-                "Bienvenido de nuevo ${UsuarioAcual.getUsuario()?.nombreUsuario}",
+                "Bienvenido de nuevo ${UsuarioAcual.getUsuario().nombreUsuario}",
                 Toast.LENGTH_LONG)
                 .show()
 
