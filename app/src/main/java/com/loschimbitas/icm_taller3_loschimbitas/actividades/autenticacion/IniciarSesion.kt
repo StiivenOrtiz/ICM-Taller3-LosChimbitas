@@ -15,7 +15,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.MapsActivity
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityIniciarSesionBinding
-import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
+import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioActual
 
 class IniciarSesion : AppCompatActivity() {
 
@@ -103,7 +103,7 @@ class IniciarSesion : AppCompatActivity() {
         if (currentUser != null) {
             val intent = Intent(this, MapsActivity::class.java)
 
-            UsuarioAcual.obtenerInformacionUsuarioActual(currentUser.uid, baseContext)
+            UsuarioActual.obtenerInformacionUsuarioActual(currentUser.uid, baseContext)
 
             intent.putExtra("user", currentUser)
 

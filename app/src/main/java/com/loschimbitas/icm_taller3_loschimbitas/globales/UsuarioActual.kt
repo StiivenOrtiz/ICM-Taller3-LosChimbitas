@@ -6,7 +6,7 @@ import android.widget.Toast
 import com.google.firebase.database.FirebaseDatabase
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 
-object UsuarioAcual {
+object UsuarioActual {
     private val databaseReference = FirebaseDatabase.getInstance().getReference("usuarios")
     private lateinit var usuario: Usuario
 
@@ -62,9 +62,11 @@ object UsuarioAcual {
     }
 
     fun setLatitudLongitud(latitud: Double, longitud: Double) {
-        getUsuario().latitud = latitud
-        getUsuario().longitud = longitud
-        actualizarInformacionUsuarioActual()
+        if (getUsuario().latitud != latitud || getUsuario().longitud != longitud) {
+            getUsuario().latitud = latitud
+            getUsuario().longitud = longitud
+            actualizarInformacionUsuarioActual()
+        }
     }
 
     private fun actualizarInformacionUsuarioActual() {

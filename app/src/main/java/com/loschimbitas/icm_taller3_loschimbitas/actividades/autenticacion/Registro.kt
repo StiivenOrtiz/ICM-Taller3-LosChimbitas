@@ -23,7 +23,7 @@ import com.google.firebase.storage.ktx.storage
 import com.loschimbitas.icm_taller3_loschimbitas.R
 import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.MapsActivity
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityRegistroBinding
-import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
+import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioActual
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 import java.io.File
 
@@ -164,7 +164,7 @@ class Registro : AppCompatActivity() {
     private fun registrarUsuarioDb() {
         myRef = database.getReference("usuarios/${auth.currentUser?.uid}")
 
-        UsuarioAcual.setUsuario(
+        UsuarioActual.setUsuario(
             Usuario(
                 auth.currentUser?.uid,
                 binding.editTextNombreUsuario.text.toString().lowercase(),
@@ -178,7 +178,7 @@ class Registro : AppCompatActivity() {
             )
         )
 
-        myRef.setValue(UsuarioAcual.getUsuario())
+        myRef.setValue(UsuarioActual.getUsuario())
     }
 
     private fun updateUI(user: FirebaseUser) {

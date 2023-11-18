@@ -2,7 +2,9 @@ package com.loschimbitas.icm_taller3_loschimbitas.globales
 
 import android.util.Log
 import com.google.firebase.database.*
+import com.google.firebase.messaging.RemoteMessage
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
+import com.loschimbitas.icm_taller3_loschimbitas.notificaciones.MyFirebaseMessagingService
 
 object UsuariosConectados {
     private val databaseReference = FirebaseDatabase.getInstance().getReference("usuarios")
@@ -27,6 +29,9 @@ object UsuariosConectados {
                     usuarios.add(usuario)
                     Log.i("UsuariosConectados1", "nombre usuario: ${usuario?.nombreUsuario}")
                     notificarObservadores()
+                    if (usuario.numeroAutenticacion !=
+                        UsuarioActual.getUsuario().numeroAutenticacion)
+                        enviarNotificacionNuevoUsuario(usuario.nombreUsuario)
                 }
             }
 
@@ -50,6 +55,11 @@ object UsuariosConectados {
                                 Log.i("UsuariosConectados2",
                                     "Conectado nombre usuario: ${usuario.nombreUsuario}")
                                 actualizo = true
+
+                                if (usuario.numeroAutenticacion !=
+                                    UsuarioActual.getUsuario().numeroAutenticacion) {
+                                    enviarNotificacionNuevoUsuario(usuario.nombreUsuario)
+                                }
                             }
                         }
                         encontrado = true
@@ -84,6 +94,21 @@ object UsuariosConectados {
         }
 
         databaseReference.addChildEventListener(childEventListener!!)
+    }
+
+    private fun enviarNotificacionNuevoUsuario(nombreUsuario: String? = null) {
+        Log.i("UsuariosConectados", "Enviando notificación")
+        // Obtener instancia de MyFirebaseMessagingService
+        val firebaseMessagingService = MyFirebaseMessagingService()
+
+        // Crear mensaje de notificación
+        val remoteMessage = RemoteMessage.Builder("FCM-SERVER")
+            .setMessageType("notification")
+            .addData("body", "Nuevo usuario conectado: $nombreUsuario")
+            .build()
+
+        // Enviar el mensaje a MyFirebaseMessagingService
+        firebaseMessagingService.onMessageReceived(remoteMessage)
     }
 
     fun detenerObtencionUsuarios() {

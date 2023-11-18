@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -12,7 +11,6 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.location.LocationServices
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -28,20 +26,17 @@ import com.google.firebase.ktx.Firebase
 import com.loschimbitas.icm_taller3_loschimbitas.MainActivity
 import com.loschimbitas.icm_taller3_loschimbitas.R
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityMapsBinding
-import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
-import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
+import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioActual
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 import com.loschimbitas.icm_taller3_loschimbitas.util.TrackerLocation
 import org.json.JSONObject
 import kotlin.math.roundToInt
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
-    UsuariosConectados.UsuariosConectadosObserver {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var auth: FirebaseAuth
-    private var usuariosConectados = UsuariosConectados.getUsuarios()
     private lateinit var trackerLocation: TrackerLocation
 
 
@@ -67,7 +62,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
         mapFragment.getMapAsync(this)
         auth = Firebase.auth
-        UsuariosConectados.agregarObserver(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -82,7 +76,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         return when (item.itemId) {
             R.id.menuCerrarSesion -> {
                 auth.signOut()
-                UsuarioAcual.setUsuario(Usuario())
+                UsuarioActual.setUsuario(Usuario())
 
                 val intent = Intent(this, MainActivity::class.java)
 
@@ -95,16 +89,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
 
             R.id.menuEstado -> {
-                if (UsuarioAcual.getEstadoUsuarioActual() == true) {
-                    UsuarioAcual.setEstadoUsuarioActual(false)
+                if (UsuarioActual.getEstadoUsuarioActual() == true) {
+                    UsuarioActual.setEstadoUsuarioActual(false)
                     Toast.makeText(
                         this,
                         "Estado cambiado a desconectado",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                else if (UsuarioAcual.getEstadoUsuarioActual() == false) {
-                    UsuarioAcual.setEstadoUsuarioActual(true)
+                else if (UsuarioActual.getEstadoUsuarioActual() == false) {
+                    UsuarioActual.setEstadoUsuarioActual(true)
                     Toast.makeText(
                         this,
                         "Estado cambiado a conectado",
@@ -117,7 +111,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             R.id.menuListarUsuarios -> {
                 // Manejar la acción de la lista de usuarios disponibles
                 val intent = Intent(this, UserListActivity::class.java)
-                UsuariosConectados.quitarObserver(this)
                 trackerLocation.stopLocationUpdates()
                 startActivity(intent)
                 return true
@@ -213,28 +206,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         trackerLocation.requestLocationUpdates()
         trackerLocation.getLocationLiveData().observe(this) { location ->
             // Actualizar en el mapa la posición del usuario
-            UsuarioAcual.setLatitudLongitud(location.latitude, location.longitude)
+            UsuarioActual.setLatitudLongitud(location.latitude, location.longitude)
             marcadorTrackeado(location.latitude, location.longitude)
         }
     }
 
-    override fun onUsuariosActualizados() {
-        // Mostrar un Toast para cada nuevo usuario
-        usuariosConectados = UsuariosConectados.getUsuarios()
-        if(usuariosConectados.isNotEmpty()) {
-            val lastUser = usuariosConectados.last()
-            if (lastUser.numeroAutenticacion != UsuarioAcual.getUsuario().numeroAutenticacion)
-                Toast.makeText(
-                    this,
-                    "Usuario conectado ${usuariosConectados.last().nombreUsuario}",
-                    Toast.LENGTH_SHORT
-                ).show()
-        }
-
-        usuariosConectados.forEach() {
-            Log.i("UsuariosConectados", "nombre usuario: ${it.nombreUsuario}")
-        }
-    }
 
     private fun calculoDistancia(
         latitudGlobal: Double,

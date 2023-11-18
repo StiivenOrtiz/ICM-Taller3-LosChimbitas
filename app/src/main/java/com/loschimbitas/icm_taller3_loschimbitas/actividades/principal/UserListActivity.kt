@@ -9,9 +9,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.loschimbitas.icm_taller3_loschimbitas.R
-import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
+import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioActual
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
-import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 import com.loschimbitas.icm_taller3_loschimbitas.util.TrackerLocation
 
 class UserListActivity : AppCompatActivity(), UsuariosConectados.UsuariosConectadosObserver{
@@ -55,7 +54,7 @@ class UserListActivity : AppCompatActivity(), UsuariosConectados.UsuariosConecta
         trackerLocation.getLocationLiveData().observe(this) { location ->
             // Actualizar en el mapa la posición del usuario
 //            updateLocation(location)
-            UsuarioAcual.setLatitudLongitud(location.latitude, location.longitude)
+            UsuarioActual.setLatitudLongitud(location.latitude, location.longitude)
         }
     }
 
