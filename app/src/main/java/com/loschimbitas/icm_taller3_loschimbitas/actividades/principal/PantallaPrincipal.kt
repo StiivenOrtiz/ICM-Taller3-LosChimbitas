@@ -13,6 +13,7 @@ import com.loschimbitas.icm_taller3_loschimbitas.MainActivity
 import com.loschimbitas.icm_taller3_loschimbitas.R
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityPantallaPrincipalBinding
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
+import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 
 class PantallaPrincipal : AppCompatActivity() {
@@ -26,6 +27,12 @@ class PantallaPrincipal : AppCompatActivity() {
         setContentView(binding.root)
         auth = Firebase.auth
 
+        val usuariosConectados = UsuariosConectados.obtenerUsuarios()
+
+        // imprimir en LOG los usuarios conectados
+        usuariosConectados.forEach {
+            println("Usuario conectado: ${it.nombreUsuario}")
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

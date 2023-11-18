@@ -15,6 +15,8 @@ class UserListActivity : AppCompatActivity() {
         val listViewUsers: ListView = findViewById(R.id.listViewUsers)
 
         // Supongamos que tienes una lista de usuarios
+
+
         val userList = listOf(
             Usuario(
                 "0",
