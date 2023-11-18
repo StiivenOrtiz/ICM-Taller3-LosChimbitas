@@ -34,6 +34,7 @@ object UsuariosConectados {
                 val usuario = snapshot.getValue(Usuario::class.java)
                 // Si el estado del usuario cambio a desconectado, eliminarlo de la lista
                 var actualizo = false
+                var encontrado = false
 
                 usuario?.let { u ->
                     usuarios.find { it.numeroAutenticacion == u.numeroAutenticacion }?.let {
@@ -51,9 +52,17 @@ object UsuariosConectados {
                                 actualizo = true
                             }
                         }
+                        encontrado = true
                     }
                 }
-                
+
+                if (!encontrado) {
+                    usuarios.add(usuario!!)
+                    Log.i("UsuariosConectados2",
+                        "Conectado nombre usuario: ${usuario.nombreUsuario}")
+                    actualizo = true
+                }
+
                 if (actualizo)
                     notificarObservadores()
             }
