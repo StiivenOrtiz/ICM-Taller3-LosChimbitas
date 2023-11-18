@@ -2,6 +2,7 @@ package com.loschimbitas.icm_taller3_loschimbitas.actividades.principal
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -18,6 +19,7 @@ import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 
 class PantallaPrincipal : AppCompatActivity() {
 
+    val listaUsuarios = UsuariosConectados.obtenerUsuarios()
     private lateinit var binding: ActivityPantallaPrincipalBinding
     private lateinit var auth: FirebaseAuth
 
@@ -31,7 +33,7 @@ class PantallaPrincipal : AppCompatActivity() {
 
         // imprimir en LOG los usuarios conectados
         usuariosConectados.forEach {
-            println("Usuario conectado: ${it.nombreUsuario}")
+            Log.i("UsuarioActual", "nombre usuario: ${it.nombreUsuario}")
         }
     }
 
@@ -59,7 +61,10 @@ class PantallaPrincipal : AppCompatActivity() {
             }
 
             R.id.menuEstado -> {
-                //Abrir actividad para configuración etc
+                if (UsuarioAcual.getEstadoUsuarioActual() == true)
+                    UsuarioAcual.setEstadoUsuarioActual(false)
+                else if (UsuarioAcual.getEstadoUsuarioActual() == false)
+                    UsuarioAcual.setEstadoUsuarioActual(true)
                 true
             }
 

@@ -51,4 +51,34 @@ object UsuarioAcual {
             Log.e("UsuarioActual", "Error al obtener información del usuario.")
         }
     }
+
+    fun setEstadoUsuarioActual(estado: Boolean) {
+        getUsuario().estado = estado
+        actualizarInformacionUsuarioActual()
+    }
+
+    fun getEstadoUsuarioActual(): Boolean? {
+        return getUsuario().estado
+    }
+
+    private fun actualizarInformacionUsuarioActual() {
+        val userID = getUsuario().numeroAutenticacion
+
+        // Verificar que el usuario actual tenga un ID válido
+        if (userID!= null && userID != "") {
+            val usuarioActualRef = databaseReference.child(userID)
+
+            // Actualizar la información en la base de datos
+            usuarioActualRef.setValue(getUsuario()).addOnSuccessListener {
+                Log.i("UsuarioActual",
+                    "Información del usuario actualizada correctamente en la base de datos.")
+            }.addOnFailureListener {
+                Log.e("UsuarioActual",
+                    "Error al actualizar información del usuario en la base de datos.")
+            }
+        } else {
+            Log.e("UsuarioActual", "ID de usuario actual no válido.")
+        }
+    }
+
 }

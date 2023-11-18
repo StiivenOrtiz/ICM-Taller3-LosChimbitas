@@ -105,13 +105,6 @@ class IniciarSesion : AppCompatActivity() {
 
             UsuarioAcual.obtenerInformacionUsuarioActual(currentUser.uid, baseContext)
 
-            Toast.makeText(
-                baseContext,
-                "Bienvenido de nuevo ${UsuarioAcual.getUsuario().nombreUsuario}",
-                Toast.LENGTH_LONG
-            )
-                .show()
-
             intent.putExtra("user", currentUser)
 
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

@@ -10,6 +10,7 @@ import com.loschimbitas.icm_taller3_loschimbitas.actividades.autenticacion.Regis
 import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.PantallaPrincipal
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityMainBinding
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
+import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 
 class MainActivity : AppCompatActivity() {
