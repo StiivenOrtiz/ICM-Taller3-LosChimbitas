@@ -8,6 +8,8 @@ data class Usuario(
     var correo: String? = null,
     var contrasena: String? = null,
     var imagenContacto: String? = null,
-    var latitud: Double? = null,
-    var longitud: Double? = null
+
+    var latitud: String? = null,
+    var longitud: String? = null,
+
 )
