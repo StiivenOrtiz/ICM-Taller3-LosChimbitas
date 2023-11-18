@@ -13,7 +13,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
-import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.PantallaPrincipal
+import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.MapsActivity
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityIniciarSesionBinding
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
 
@@ -101,7 +101,7 @@ class IniciarSesion : AppCompatActivity() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null) {
-            val intent = Intent(this, PantallaPrincipal::class.java)
+            val intent = Intent(this, MapsActivity::class.java)
 
             UsuarioAcual.obtenerInformacionUsuarioActual(currentUser.uid, baseContext)
 

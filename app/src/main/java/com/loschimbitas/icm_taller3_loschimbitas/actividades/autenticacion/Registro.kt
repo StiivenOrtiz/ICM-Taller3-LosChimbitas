@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.loschimbitas.icm_taller3_loschimbitas.R
-import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.PantallaPrincipal
+import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.MapsActivity
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityRegistroBinding
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
@@ -182,7 +182,7 @@ class Registro : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser) {
-        val intent = Intent(this, PantallaPrincipal::class.java)
+        val intent = Intent(this, MapsActivity::class.java)
 
         intent.putExtra("user", user)
 

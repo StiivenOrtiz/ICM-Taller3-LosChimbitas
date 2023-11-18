@@ -7,10 +7,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.loschimbitas.icm_taller3_loschimbitas.actividades.autenticacion.IniciarSesion
 import com.loschimbitas.icm_taller3_loschimbitas.actividades.autenticacion.Registro
-import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.PantallaPrincipal
+import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.MapsActivity
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityMainBinding
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
-import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 
 class MainActivity : AppCompatActivity() {
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null) {
-            val intent = Intent(this, PantallaPrincipal::class.java)
+            val intent = Intent(this, MapsActivity::class.java)
 
             UsuarioAcual.obtenerInformacionUsuarioActual(currentUser.uid, baseContext)
 
