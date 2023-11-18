@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.LocationServices
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -28,6 +29,7 @@ import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityMapsBinding
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
+import com.loschimbitas.icm_taller3_loschimbitas.util.TrackerLocation
 import org.json.JSONObject
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados.UsuariosConectadosObserver {
@@ -36,6 +38,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
     private lateinit var binding: ActivityMapsBinding
     private lateinit var auth: FirebaseAuth
     var usuariosConectados = UsuariosConectados.getUsuarios()
+    private lateinit var trackerLocation: TrackerLocation
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +50,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
+
         mapFragment.getMapAsync(this)
         auth = Firebase.auth
         UsuariosConectados.agregarObserver(this)
@@ -122,15 +126,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
         // Solicitar permisos de ubicación si no están otorgados
         if (ContextCompat.checkSelfPermission(
                 this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION),
                 1
             )
         } else {
+            trackUser()
+
             // Configurar el mapa
             mMap.isMyLocationEnabled = true
             mMap.uiSettings.isMyLocationButtonEnabled = true
@@ -172,6 +183,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
             val lastLongitude = lastLocation.getDouble("longitude")
             val lastLatLng = LatLng(lastLatitude, lastLongitude)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLatLng, 12.0f))
+        }
+    }
+
+    private fun trackUser(){
+        trackerLocation = ViewModelProvider(this)[TrackerLocation::class.java]
+
+        trackerLocation.requestLocationUpdates()
+        trackerLocation.getLocationLiveData().observe(this) { location ->
+            // Actualizar en el mapa la posición del usuario
+//            updateLocation(location)
+            UsuarioAcual.setLatitudLongitud(location.latitude, location.longitude)
         }
     }
 

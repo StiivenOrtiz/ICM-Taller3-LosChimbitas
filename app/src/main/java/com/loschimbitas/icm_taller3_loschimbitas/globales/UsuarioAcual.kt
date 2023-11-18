@@ -61,6 +61,12 @@ object UsuarioAcual {
         return getUsuario().estado
     }
 
+    fun setLatitudLongitud(latitud: Double, longitud: Double) {
+        getUsuario().latitud = latitud
+        getUsuario().longitud = longitud
+        actualizarInformacionUsuarioActual()
+    }
+
     private fun actualizarInformacionUsuarioActual() {
         val userID = getUsuario().numeroAutenticacion
 
