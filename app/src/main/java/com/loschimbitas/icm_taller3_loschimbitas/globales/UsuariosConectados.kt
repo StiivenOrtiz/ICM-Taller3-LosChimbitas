@@ -30,8 +30,22 @@ object UsuariosConectados {
                     Log.i("UsuariosConectados1", "nombre usuario: ${usuario?.nombreUsuario}")
                     notificarObservadores()
                     if (usuario.numeroAutenticacion !=
-                        UsuarioActual.getUsuario().numeroAutenticacion)
-                        enviarNotificacionNuevoUsuario(usuario.nombreUsuario)
+                        UsuarioActual.getUsuario().numeroAutenticacion) {
+                        Log.d("USUARIOSNOTIFY",
+                            "Enviando notificación1")
+
+                        // Obtener instancia de MyFirebaseMessagingService
+                        val firebaseMessagingService = MyFirebaseMessagingService()
+
+                        // Crear mensaje de notificación
+                        val remoteMessage = RemoteMessage.Builder("FCM-SERVER")
+                            .setMessageType("notification")
+                            .addData("body", "Nuevo usuario conectado: $usuario.nombreUsuario")
+                            .build()
+
+                        // Enviar el mensaje a MyFirebaseMessagingService
+                        firebaseMessagingService.onMessageReceived(remoteMessage)
+                    }
                 }
             }
 
@@ -58,7 +72,19 @@ object UsuariosConectados {
 
                                 if (usuario.numeroAutenticacion !=
                                     UsuarioActual.getUsuario().numeroAutenticacion) {
-                                    enviarNotificacionNuevoUsuario(usuario.nombreUsuario)
+                                    Log.d("USUARIOSNOTIFY",
+                                        "Enviando notificación1")
+                                    // Obtener instancia de MyFirebaseMessagingService
+                                    val firebaseMessagingService = MyFirebaseMessagingService()
+
+                                    // Crear mensaje de notificación
+                                    val remoteMessage = RemoteMessage.Builder("FCM-SERVER")
+                                        .setMessageType("notification")
+                                        .addData("body", "Nuevo usuario conectado: $usuario.nombreUsuario")
+                                        .build()
+
+                                    // Enviar el mensaje a MyFirebaseMessagingService
+                                    firebaseMessagingService.onMessageReceived(remoteMessage)
                                 }
                             }
                         }
@@ -96,20 +122,6 @@ object UsuariosConectados {
         databaseReference.addChildEventListener(childEventListener!!)
     }
 
-    private fun enviarNotificacionNuevoUsuario(nombreUsuario: String? = null) {
-        Log.i("UsuariosConectados", "Enviando notificación")
-        // Obtener instancia de MyFirebaseMessagingService
-        val firebaseMessagingService = MyFirebaseMessagingService()
-
-        // Crear mensaje de notificación
-        val remoteMessage = RemoteMessage.Builder("FCM-SERVER")
-            .setMessageType("notification")
-            .addData("body", "Nuevo usuario conectado: $nombreUsuario")
-            .build()
-
-        // Enviar el mensaje a MyFirebaseMessagingService
-        firebaseMessagingService.onMessageReceived(remoteMessage)
-    }
 
     fun detenerObtencionUsuarios() {
         // Detener la escucha de eventos cuando sea necesario (por ejemplo, en onDestroy de la actividad)

@@ -38,6 +38,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
     private lateinit var binding: ActivityMapsBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var trackerLocation: TrackerLocation
+    private var latitudAnterior = 0.0
+    private var longitudAnterior = 0.0
 
 
     //    Trackeo con marcador
@@ -207,7 +209,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
         trackerLocation.getLocationLiveData().observe(this) { location ->
             // Actualizar en el mapa la posición del usuario
             UsuarioActual.setLatitudLongitud(location.latitude, location.longitude)
-            marcadorTrackeado(location.latitude, location.longitude)
+            if(latitudAnterior != location.latitude || longitudAnterior != location.longitude) {
+                marcadorTrackeado(location.latitude, location.longitude)
+                latitudAnterior = location.latitude
+                longitudAnterior = location.longitude
+            }
         }
     }
 
