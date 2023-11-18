@@ -16,6 +16,8 @@ import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioActual
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 import com.google.firebase.FirebaseApp
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.util.Log
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
@@ -51,6 +53,18 @@ class MainActivity : AppCompatActivity(), UsuariosConectados.UsuariosConectadosO
         FirebaseApp.initializeApp(this)
         askNotificacionsPermission()
         UsuariosConectados.agregarObserver(this)
+
+        // Create channel to show notifications.
+        val channelId = "default_notification_channel_id"
+        val channelName = "users_channel"
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager?.createNotificationChannel(
+            NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_LOW,
+            ),
+        )
 
         inicializar()
     }
@@ -97,7 +111,7 @@ class MainActivity : AppCompatActivity(), UsuariosConectados.UsuariosConectadosO
     }
 
 
-    fun askNotificacionsPermission(){
+    private fun askNotificacionsPermission(){
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {

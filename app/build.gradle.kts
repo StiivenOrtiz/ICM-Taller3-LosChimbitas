@@ -59,7 +59,6 @@ dependencies {
     implementation ("com.google.firebase:firebase-storage")
 
     implementation("com.google.firebase:firebase-core:21.1.1")
-    implementation("com.google.firebase:firebase-messaging:23.3.1")
 
     // to user circle ImageView
     implementation("de.hdodenhof:circleimageview:3.1.0")
@@ -78,5 +77,7 @@ dependencies {
 
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     
 }

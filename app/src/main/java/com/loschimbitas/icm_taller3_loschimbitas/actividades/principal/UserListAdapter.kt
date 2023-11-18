@@ -2,70 +2,48 @@ package com.loschimbitas.icm_taller3_loschimbitas.actividades.principal
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.loschimbitas.icm_taller3_loschimbitas.R
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 
-class UserListAdapter(private val context: Context, private val userList: List<Usuario>) :
-    BaseAdapter() {
+class UserListAdapter(private val mContext: Context, private val userList: List<Usuario>) :
+    ArrayAdapter<Usuario>(mContext, 0, userList) {
 
-    override fun getCount(): Int {
-        return userList.size
-    }
+    @SuppressLint("ViewHolder") // Suprimir advertencia
+    override fun getView(
+        position: Int,
+        convertView: View?,
+        parent: ViewGroup
+    ): View { // Al crear la vista
+        val layout = LayoutInflater.from(mContext)
+            .inflate(R.layout.list_item_user, parent, false) // Establecer el layout
 
-    override fun getItem(position: Int): Any {
-        return userList[position]
-    }
+        Glide.with(mContext)
+            .load(userList[position].imagenContacto)
+            .into(layout.findViewById(R.id.imageViewUser))
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
+        Log.i("UserListAdapter", "imagen: ${userList[position].imagenContacto}")
 
-    @SuppressLint("SetTextI18n")
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View
-        val viewHolder: ViewHolder
+        // textViewUserName
+        layout.findViewById<TextView>(R.id.textViewUserName).text =
+            userList[position].nombre
 
-        if (convertView == null) {
-            view = LayoutInflater.from(context).inflate(
-                R.layout.list_item_user, parent, false
-            )
-            viewHolder = ViewHolder(
-                view.findViewById(R.id.imageViewUser),
-                view.findViewById(R.id.textViewUserName),
-                view.findViewById(R.id.btnCurrentUserLocation)
-            )
-            view.tag = viewHolder
-        } else {
-            view = convertView
-            viewHolder = view.tag as ViewHolder
+        // btnCurrentUserLocation
+        layout.findViewById<Button>(R.id.btnCurrentUserLocation).setOnClickListener {
+            // Lanzara una activity con el mapa
+            val intent = Intent(mContext, MapsActivity::class.java)
         }
 
-        val user = userList[position]
-
-        viewHolder.imageViewUser.setImageResource(R.drawable.perfil)
-        viewHolder.textViewUserName.text = "${user.nombre} ${user.apellido}"
-
-        viewHolder.btnCurrentUserLocation.setOnClickListener {
-
-
-
-        }
-
-        return view
+        return layout // Retornar la vista
     }
-
-    // ViewHolder para mejorar el rendimiento de la ListView
-    private data class ViewHolder(
-        val imageViewUser: ImageView,
-        val textViewUserName: TextView,
-        val btnCurrentUserLocation: Button
-    )
 }
 

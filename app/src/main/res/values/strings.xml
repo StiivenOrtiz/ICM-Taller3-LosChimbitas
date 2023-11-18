@@ -29,5 +29,6 @@
     <string name="temp_image">temp_image.jpg</string>
     <string name="authorities">com.loschimbitas.taller3.fileprovider</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="UserListActivity">UserListActivity</string>
 
 </resources>

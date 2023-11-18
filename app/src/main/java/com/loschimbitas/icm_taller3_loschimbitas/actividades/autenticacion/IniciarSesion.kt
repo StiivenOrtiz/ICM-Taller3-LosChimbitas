@@ -1,5 +1,7 @@
 package com.loschimbitas.icm_taller3_loschimbitas.actividades.autenticacion
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle

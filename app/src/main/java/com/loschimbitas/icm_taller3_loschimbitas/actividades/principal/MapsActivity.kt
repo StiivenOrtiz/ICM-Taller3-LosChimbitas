@@ -47,7 +47,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
     // fin trackeo con marcador
 
     companion object {
-        val RADIUS_OF_EARTH_KM = 6371
+        const val RADIUS_OF_EARTH_KM = 6371
     }
 
 
@@ -208,8 +208,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
         trackerLocation.requestLocationUpdates()
         trackerLocation.getLocationLiveData().observe(this) { location ->
             // Actualizar en el mapa la posición del usuario
-            UsuarioActual.setLatitudLongitud(location.latitude, location.longitude)
             if(latitudAnterior != location.latitude || longitudAnterior != location.longitude) {
+                UsuarioActual.setLatitudLongitud(location.latitude, location.longitude)
                 marcadorTrackeado(location.latitude, location.longitude)
                 latitudAnterior = location.latitude
                 longitudAnterior = location.longitude

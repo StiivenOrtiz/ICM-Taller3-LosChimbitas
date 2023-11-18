@@ -41,7 +41,7 @@ class Registro : AppCompatActivity() {
     // Fin variables para firebase auth
 
     //variables para firebase storage
-    val storage = Firebase.storage
+    private val storage = Firebase.storage
     //fin variables para firebase storage
 
     // Variables para fotos e imagen
@@ -120,7 +120,6 @@ class Registro : AppCompatActivity() {
     private fun iniciarListenerBtnRegistrar() {
         binding.buttonRegistrarse.setOnClickListener {
             if (validateForm()) {
-                uploadFile(tempImageUri.toString())
                 registrarUsuarioAuth()
             }
         }
@@ -146,7 +145,7 @@ class Registro : AppCompatActivity() {
                     Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful)
                     val user = auth.currentUser
                     if (user != null) {
-                        registrarUsuarioDb()
+                        uploadFile(tempImageUri.toString())
                         // Update user info
                         updateUI(user)
                     }
@@ -270,17 +269,20 @@ class Registro : AppCompatActivity() {
     // Fin lofica para la foto de perfil
 
     // Lógica para subir la foto de perfil a firebase storage
-    private fun uploadFile(uri: String) {
-        val imageRef = storage.reference.child(uri)
-        imageRef.putFile(uri.toUri())
-            .addOnSuccessListener { // Get a URL to the uploaded content
-                Log.i("FBApp", "Successfully uploaded image")
+    private fun uploadFile(uriS: String) {
+        val imageRef = storage.reference.child(uriS)
+        imageRef.putFile(uriS.toUri())
+            .addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener {
+                    urlImagenUser = it.toString()
+                    Log.i("UploadFile", "url imagen: $urlImagenUser")
+                    registrarUsuarioDb()
+                }
             }
             .addOnFailureListener {
-                // Handle unsuccessful uploads
-                Log.w("bro", "noooo, no sirvió")
+                Log.e("UploadFile", "Error al subir la imagen", it)
+                registrarUsuarioDb()
             }
-        urlImagenUser = imageRef.downloadUrl.toString()
     }
     // Fin lógica para subir la foto de perfil a firebase storage
 }

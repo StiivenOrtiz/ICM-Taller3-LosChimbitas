@@ -9,23 +9,32 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.loschimbitas.icm_taller3_loschimbitas.R
+import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityUserListBinding
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioActual
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
 import com.loschimbitas.icm_taller3_loschimbitas.util.TrackerLocation
 
 class UserListActivity : AppCompatActivity(), UsuariosConectados.UsuariosConectadosObserver{
 
-    private var usuariosConectados = UsuariosConectados.getUsuarios()
-    private val listViewUsers: ListView = findViewById(R.id.listViewUsers)
+    private var usuariosConectados = UsuariosConectados.getUsuarios().toMutableList()
     private lateinit var trackerLocation: TrackerLocation
+    private lateinit var binding: ActivityUserListBinding
+    private var adapter: UserListAdapter? = null
+
+    private var latitudAnterior = 0.0
+    private var longitudAnterior = 0.0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user_list)
+        binding = ActivityUserListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        UsuariosConectados.agregarObserver(this)
+
+        adapter = UserListAdapter(this, usuariosConectados)
 
         // Configurar un adaptador personalizado para la ListView
-        val adapter = UserListAdapter(this, usuariosConectados)
-        listViewUsers.adapter = adapter
+        binding.listViewUsers.adapter = adapter
 
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -47,28 +56,49 @@ class UserListActivity : AppCompatActivity(), UsuariosConectados.UsuariosConecta
         }
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        UsuariosConectados.quitarObserver(this)
+        trackerLocation.stopLocationUpdates()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        UsuariosConectados.agregarObserver(this)
+        trackerLocation.requestLocationUpdates()
+    }
+
+    override fun onUsuariosActualizados() {
+        val newUpdate = UsuariosConectados.getUsuarios()
+        for (usuario in newUpdate){
+            // Si hay un usuario que no se contenia
+            if (!usuariosConectados.contains(usuario)){
+                usuariosConectados.add(usuario)
+            }
+        }
+
+        for (usuario in usuariosConectados){
+            // Si hay un usuario que no se contenia
+            if (!newUpdate.contains(usuario)){
+                usuariosConectados.remove(usuario)
+            }
+        }
+
+        adapter?.notifyDataSetChanged()
+    }
+
     private fun trackUser(){
         trackerLocation = ViewModelProvider(this)[TrackerLocation::class.java]
 
         trackerLocation.requestLocationUpdates()
         trackerLocation.getLocationLiveData().observe(this) { location ->
             // Actualizar en el mapa la posición del usuario
-//            updateLocation(location)
-            UsuarioActual.setLatitudLongitud(location.latitude, location.longitude)
+            if(latitudAnterior != location.latitude || longitudAnterior != location.longitude) {
+                UsuarioActual.setLatitudLongitud(location.latitude, location.longitude)
+                latitudAnterior = location.latitude
+                longitudAnterior = location.longitude
+            }
         }
-    }
-
-    override fun onUsuariosActualizados() {
-        usuariosConectados = UsuariosConectados.getUsuarios()
-
-        if (usuariosConectados.isNotEmpty())
-            Toast.makeText(
-                this,
-                "Usuario conectado ${usuariosConectados.last().nombreUsuario}",
-                Toast.LENGTH_SHORT
-            ).show()
-
-        val adapter = UserListAdapter(this, usuariosConectados)
-        listViewUsers.adapter = adapter
     }
 }
