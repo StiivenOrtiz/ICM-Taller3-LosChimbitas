@@ -1,5 +1,6 @@
 package com.loschimbitas.icm_taller3_loschimbitas.actividades.principal
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -25,12 +26,14 @@ class UserListAdapter(private val context: Context, private val userList: List<U
         return position.toLong()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View
         val viewHolder: ViewHolder
 
         if (convertView == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.list_item_user, parent, false)
+            view = LayoutInflater.from(context).inflate(
+                R.layout.list_item_user, parent, false)
             viewHolder = ViewHolder(
                 view.findViewById(R.id.imageViewUser),
                 view.findViewById(R.id.textViewUserName),
@@ -44,10 +47,8 @@ class UserListAdapter(private val context: Context, private val userList: List<U
 
         val user = userList[position]
 
-
         viewHolder.imageViewUser.setImageResource(R.drawable.perfil)
         viewHolder.textViewUserName.text = "${user.nombre} ${user.apellido}"
-
 
         viewHolder.btnCurrentUserLocation.setOnClickListener {
 

@@ -17,16 +17,15 @@ class UserListActivity : AppCompatActivity() {
         // Supongamos que tienes una lista de usuarios
         val userList = listOf(
             Usuario(
-                0,
+                "0",
                 "Parchado",
                 "John",
                 "Doe",
                 "john@example.com",
-                "password",
-                "",
-                "37.7749",
-                "-122.4194",
-                true
+                "imagen",
+                false,
+                0.0,
+                37.7749,
             ),
         )
 

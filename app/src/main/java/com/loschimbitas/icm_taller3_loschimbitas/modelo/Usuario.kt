@@ -6,10 +6,8 @@ data class Usuario(
     var nombre: String? = null,
     var apellido: String? = null,
     var correo: String? = null,
-    var contrasena: String? = null,
     var imagenContacto: String? = null,
-
-    var latitud: String? = null,
-    var longitud: String? = null,
-
+    var estado: Boolean? = null,
+    var latitud: Double? = null,
+    var longitud: Double? = null,
 )

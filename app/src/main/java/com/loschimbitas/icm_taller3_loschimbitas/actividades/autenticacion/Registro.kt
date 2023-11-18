@@ -23,6 +23,7 @@ import com.google.firebase.storage.ktx.storage
 import com.loschimbitas.icm_taller3_loschimbitas.R
 import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.PantallaPrincipal
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityRegistroBinding
+import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 import java.io.File
 
@@ -42,10 +43,6 @@ class Registro : AppCompatActivity() {
     //variables para firebase storage
     val storage = Firebase.storage
     //fin variables para firebase storage
-
-    // User variable
-    private lateinit var usuario: Usuario
-
 
     // Variables para fotos e imagen
     private lateinit var tempImageUri: Uri
@@ -99,7 +96,6 @@ class Registro : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = Firebase.auth
-        usuario = Usuario()
         inicializar()
     }
 
@@ -167,27 +163,26 @@ class Registro : AppCompatActivity() {
 
     private fun registrarUsuarioDb() {
         myRef = database.getReference("usuarios/${auth.currentUser?.uid}")
-        val nombre = binding.editTextNombre.text.toString()
-        val apellido = binding.editTextApellido.text.toString()
-        val correo = binding.editTextCorreo.text.toString()
-        val contrasena = binding.editTextContrasena.text.toString()
-        usuario =
+
+        UsuarioAcual.setUsuario(
             Usuario(
                 numeroAutenticacion = auth.currentUser?.uid,
-                nombreUsuario = binding.editTextNombreUsuario.text.toString(),
-                nombre = nombre, apellido = apellido, correo = correo,
-                contrasena = contrasena, imagenContacto = urlImagenUser,
+                nombreUsuario = binding.editTextNombreUsuario.text.toString().lowercase(),
+                nombre = binding.editTextNombre.text.toString(),
+                apellido = binding.editTextApellido.text.toString(),
+                correo = binding.editTextCorreo.text.toString().lowercase(),
+                imagenContacto = urlImagenUser,
                 latitud = 0.0, longitud = 0.0
             )
-        myRef.setValue(usuario)
+        )
+
+        myRef.setValue(UsuarioAcual.getUsuario())
     }
 
     private fun updateUI(user: FirebaseUser) {
         val intent = Intent(this, PantallaPrincipal::class.java)
 
         intent.putExtra("user", user)
-        intent.putExtra("user_username", usuario.nombreUsuario)
-        intent.putExtra("user_img", usuario.imagenContacto)
 
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 

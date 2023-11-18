@@ -11,12 +11,20 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.loschimbitas.icm_taller3_loschimbitas.R
 import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.PantallaPrincipal
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityIniciarSesionBinding
+import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
 
 class IniciarSesion : AppCompatActivity() {
+
+    // Variables para firebase database
+    private val database = FirebaseDatabase.getInstance()
+    private lateinit var myRef: DatabaseReference
+    // Fin variables para firebase database
 
     private lateinit var binding: ActivityIniciarSesionBinding
 
@@ -34,8 +42,9 @@ class IniciarSesion : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
+
+        if (auth.currentUser != null)
+            updateUI(auth.currentUser)
     }
 
     private fun inicializar() {
@@ -65,7 +74,6 @@ class IniciarSesion : AppCompatActivity() {
                         Log.w(TAG, "signInWithEmail:failure", task.exception)
                         Toast.makeText(this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show()
-                        updateUI(null)
                     }
                 }
         }
@@ -92,6 +100,14 @@ class IniciarSesion : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null) {
             val intent = Intent(this, PantallaPrincipal::class.java)
+
+            UsuarioAcual.obtenerInformacionUsuarioActual(currentUser.uid, baseContext)
+
+            Toast.makeText(
+                baseContext,
+                "Bienvenido de nuevo ${UsuarioAcual.getUsuario()?.nombreUsuario}",
+                Toast.LENGTH_LONG)
+                .show()
 
             intent.putExtra("user", currentUser)
 

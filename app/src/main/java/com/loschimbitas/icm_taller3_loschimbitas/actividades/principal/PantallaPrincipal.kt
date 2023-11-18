@@ -12,6 +12,8 @@ import com.google.firebase.ktx.Firebase
 import com.loschimbitas.icm_taller3_loschimbitas.MainActivity
 import com.loschimbitas.icm_taller3_loschimbitas.R
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityPantallaPrincipalBinding
+import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
+import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 
 class PantallaPrincipal : AppCompatActivity() {
 
@@ -28,21 +30,28 @@ class PantallaPrincipal : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
+        supportActionBar?.title = "Los Chimbitas"
         inflater.inflate(R.menu.menu, menu)
         return true
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-// Handle item selection
+        // Handle item selection
         return when (item.itemId) {
             R.id.menuCerrarSesion -> {
                 auth.signOut()
+                UsuarioAcual.setUsuario(Usuario())
+
                 val intent = Intent(this, MainActivity::class.java)
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
                 startActivity(intent)
-                true
+
+                return true
             }
             R.id.menuEstado -> {
-//Abrir actividad para configuración etc
+                //Abrir actividad para configuración etc
                 true
             }
             R.id.menuListarUsuarios -> {

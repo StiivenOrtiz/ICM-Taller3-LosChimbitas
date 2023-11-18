@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/menuCerrarSesion"
         android:title="@string/menu_1"
+        android:icon="@drawable/logout_svgrepo_com"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/menuEstado"
         android:title="@string/menu_2"
+        android:icon="@drawable/power_switch_turn_on_svgrepo_com"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/menuListarUsuarios"
         android:title="@string/menu_3"
+        android:icon="@drawable/users_svgrepo_com"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:title=""
+        android:visible="false"
+        app:showAsAction="never" />
+
 </menu>
