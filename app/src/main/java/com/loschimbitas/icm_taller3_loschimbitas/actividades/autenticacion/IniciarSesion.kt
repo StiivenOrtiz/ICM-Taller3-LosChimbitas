@@ -20,10 +20,8 @@ class IniciarSesion : AppCompatActivity() {
 
     private lateinit var binding: ActivityIniciarSesionBinding
 
-//    Variables para la autenticación
+    // Variables para la autenticación
     private lateinit var auth:FirebaseAuth
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,18 +38,6 @@ class IniciarSesion : AppCompatActivity() {
         updateUI(currentUser)
     }
 
-    private fun updateUI(currentUser: FirebaseUser?) {
-        if (currentUser != null) {
-            val intent = Intent(this, PantallaPrincipal::class.java)
-            intent.putExtra("user", currentUser)
-            startActivity(intent)
-        } else {
-            binding.editTextUsuario.setText("")
-            binding.editTextContrasena.setText("")
-        }
-
-    }
-
     private fun inicializar() {
         iniciarListeners()
     }
@@ -62,27 +48,9 @@ class IniciarSesion : AppCompatActivity() {
 
     private fun iniciarListenerBtnIniciarSesion() {
         binding.btnIniciarSesionMenu.setOnClickListener {
-            signInUser(binding.editTextUsuario.text.toString(), binding.editTextContrasena.text.toString())
+            signInUser(binding.editTextUsuario.text.toString(),
+                binding.editTextContrasena.text.toString())
         }
-    }
-
-    private fun validateForm(): Boolean {
-        var valid = true
-        val email = binding.editTextUsuario.text.toString()
-        if (TextUtils.isEmpty(email)) {
-            binding.editTextUsuario.error = "Required."
-            valid = false
-        } else {
-            binding.editTextUsuario.error = null
-        }
-        val password = binding.editTextContrasena.text.toString()
-        if (TextUtils.isEmpty(password)) {
-            binding.editTextContrasena.error = "Required."
-            valid = false
-        } else {
-            binding.editTextContrasena.error = null
-        }
-        return valid
     }
 
     private fun signInUser(email: String, password: String){
@@ -90,7 +58,7 @@ class IniciarSesion : AppCompatActivity() {
             auth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-// Sign in success, update UI
+                        // Sign in success, update UI
                         Log.d(TAG, "signInWithEmail:success:")
                         updateUI(auth.currentUser)
                     } else {
@@ -103,5 +71,37 @@ class IniciarSesion : AppCompatActivity() {
         }
     }
 
+    private fun validateForm(): Boolean {
+        var valid = true
 
+        if (TextUtils.isEmpty(binding.editTextUsuario.text.toString())) {
+            binding.editTextUsuario.error = "Required."
+            valid = false
+        } else
+            binding.editTextUsuario.error = null
+
+        if (TextUtils.isEmpty(binding.editTextContrasena.text.toString())) {
+            binding.editTextContrasena.error = "Required."
+            valid = false
+        } else
+            binding.editTextContrasena.error = null
+
+        return valid
+    }
+
+    private fun updateUI(currentUser: FirebaseUser?) {
+        if (currentUser != null) {
+            val intent = Intent(this, PantallaPrincipal::class.java)
+
+            intent.putExtra("user", currentUser)
+
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+            startActivity(intent)
+        } else {
+            Toast.makeText(baseContext, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+            binding.editTextUsuario.setText("")
+            binding.editTextContrasena.setText("")
+        }
+    }
 }

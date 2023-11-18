@@ -1,6 +1,5 @@
 package com.loschimbitas.icm_taller3_loschimbitas.actividades.autenticacion
 
-import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
@@ -20,12 +19,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.loschimbitas.icm_taller3_loschimbitas.R
 import com.loschimbitas.icm_taller3_loschimbitas.actividades.principal.PantallaPrincipal
 import com.loschimbitas.icm_taller3_loschimbitas.databinding.ActivityRegistroBinding
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
-import com.google.firebase.storage.ktx.storage
-
 import java.io.File
 
 class Registro : AppCompatActivity() {
@@ -93,12 +91,13 @@ class Registro : AppCompatActivity() {
                 selectSinglePhotoContract.launch(PickVisualMediaRequest())
             }
         }
-//    Fin gestión de permisos
+    //    Fin gestión de permisos
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegistroBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         auth = Firebase.auth
         usuario = Usuario()
         inicializar()
@@ -128,8 +127,6 @@ class Registro : AppCompatActivity() {
                 uploadFile(tempImageUri.toString())
                 registrarUsuarioAuth()
             }
-
-//            val intent = Intent(this, AgregarFotoPerfil::class.java)
         }
 
         binding.BtnTakePhoto.setOnClickListener {
@@ -140,27 +137,27 @@ class Registro : AppCompatActivity() {
         binding.BtnUploadPhoto.setOnClickListener {
             checkGalleryPermission()
         }
-
     }
 
     private fun registrarUsuarioAuth() {
 
-        var email = binding.editTextCorreo.text.toString()
-        var password = binding.editTextContrasena.text.toString()
-
-        auth.createUserWithEmailAndPassword(email, password)
+        auth.createUserWithEmailAndPassword(
+            binding.editTextCorreo.text.toString(),
+            binding.editTextContrasena.text.toString()
+        )
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful)
                     val user = auth.currentUser
                     if (user != null) {
                         registrarUsuarioDb()
-// Update user info
+                        // Update user info
                         updateUI(user)
                     }
                 } else {
                     Toast.makeText(
-                        this, "createUserWithEmail:Failure: " + task.exception.toString(),
+                        this, "createUserWithEmail: Failure: " +
+                                task.exception.toString(),
                         Toast.LENGTH_SHORT
                     ).show()
                     task.exception?.message?.let { Log.e(TAG, it) }
@@ -176,7 +173,7 @@ class Registro : AppCompatActivity() {
         val contrasena = binding.editTextContrasena.text.toString()
         usuario =
             Usuario(
-                numeroAutenticacion = auth.currentUser?.uid?.toString(),
+                numeroAutenticacion = auth.currentUser?.uid,
                 nombreUsuario = binding.editTextNombreUsuario.text.toString(),
                 nombre = nombre, apellido = apellido, correo = correo,
                 contrasena = contrasena, imagenContacto = urlImagenUser,
@@ -187,50 +184,53 @@ class Registro : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser) {
         val intent = Intent(this, PantallaPrincipal::class.java)
+
         intent.putExtra("user", user)
         intent.putExtra("user_username", usuario.nombreUsuario)
         intent.putExtra("user_img", usuario.imagenContacto)
+
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
         startActivity(intent)
     }
 
     private fun validateForm(): Boolean {
         var valid = true
-        val username = binding.editTextNombreUsuario.text.toString()
-        if (TextUtils.isEmpty(username)) {
+
+        if (TextUtils.isEmpty(binding.editTextNombreUsuario.text.toString())) {
             binding.editTextNombreUsuario.error = "Required."
             valid = false
-        } else {
+        } else
             binding.editTextNombreUsuario.error = null
-        }
-        val name = binding.editTextNombre.text.toString()
-        if (TextUtils.isEmpty(name)) {
+
+        if (TextUtils.isEmpty(binding.editTextNombre.text.toString())) {
             binding.editTextNombre.error = "Required."
             valid = false
-        } else {
+        } else
             binding.editTextNombre.error = null
-        }
-        val lastName = binding.editTextApellido.text.toString()
-        if (TextUtils.isEmpty(lastName)) {
+
+
+        if (TextUtils.isEmpty(binding.editTextApellido.text.toString())) {
             binding.editTextApellido.error = "Required."
             valid = false
-        } else {
+        } else
             binding.editTextApellido.error = null
-        }
-        val email = binding.editTextCorreo.text.toString()
-        if (TextUtils.isEmpty(email)) {
+
+        if (TextUtils.isEmpty(binding.editTextCorreo.text.toString())) {
             binding.editTextCorreo.error = "Required."
             valid = false
-        } else {
+        } else
             binding.editTextCorreo.error = null
-        }
-        val password = binding.editTextContrasena.text.toString()
-        if (TextUtils.isEmpty(password)) {
+
+
+        if (TextUtils.isEmpty(binding.editTextContrasena.text.toString())) {
             binding.editTextContrasena.error = "Required."
             valid = false
-        } else {
+        } else
             binding.editTextContrasena.error = null
-        }
-        if (binding.profileImage.drawable == null || binding.profileImage.drawable.constantState == ContextCompat.getDrawable(
+
+        if (binding.profileImage.drawable == null ||
+            binding.profileImage.drawable.constantState == ContextCompat.getDrawable(
                 this,
                 R.drawable.icon_user
             )?.constantState
@@ -239,10 +239,10 @@ class Registro : AppCompatActivity() {
                 this,
                 "Por favor, seleccione una foto de perfil.",
                 Toast.LENGTH_SHORT
-            )
-                .show()
+            ).show()
             valid = false
         }
+
         return valid
     }
 
@@ -281,11 +281,9 @@ class Registro : AppCompatActivity() {
             }
             .addOnFailureListener {
                 // Handle unsuccessful uploads
-                // ...
                 Log.w("bro", "noooo, no sirvió")
             }
         urlImagenUser = imageRef.downloadUrl.toString()
     }
     // Fin lógica para subir la foto de perfil a firebase storage
-
 }
