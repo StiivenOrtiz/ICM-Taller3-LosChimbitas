@@ -41,7 +41,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var auth: FirebaseAuth
-    var usuariosConectados = UsuariosConectados.getUsuarios()
+    private var usuariosConectados = UsuariosConectados.getUsuarios()
     private lateinit var trackerLocation: TrackerLocation
 
 
@@ -68,7 +68,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         mapFragment.getMapAsync(this)
         auth = Firebase.auth
         UsuariosConectados.agregarObserver(this)
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -214,7 +213,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         trackerLocation.requestLocationUpdates()
         trackerLocation.getLocationLiveData().observe(this) { location ->
             // Actualizar en el mapa la posición del usuario
-//            updateLocation(location)
             UsuarioAcual.setLatitudLongitud(location.latitude, location.longitude)
             marcadorTrackeado(location.latitude, location.longitude)
         }
@@ -223,12 +221,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     override fun onUsuariosActualizados() {
         // Mostrar un Toast para cada nuevo usuario
         usuariosConectados = UsuariosConectados.getUsuarios()
-        if(usuariosConectados.isNotEmpty())
-            Toast.makeText(
-                this,
-                "Usuario conectado ${usuariosConectados.last().nombreUsuario}",
-                Toast.LENGTH_SHORT
-            ).show()
+        if(usuariosConectados.isNotEmpty()) {
+            val lastUser = usuariosConectados.last()
+            if (lastUser.numeroAutenticacion != UsuarioAcual.getUsuario().numeroAutenticacion)
+                Toast.makeText(
+                    this,
+                    "Usuario conectado ${usuariosConectados.last().nombreUsuario}",
+                    Toast.LENGTH_SHORT
+                ).show()
+        }
 
         usuariosConectados.forEach() {
             Log.i("UsuariosConectados", "nombre usuario: ${it.nombreUsuario}")
