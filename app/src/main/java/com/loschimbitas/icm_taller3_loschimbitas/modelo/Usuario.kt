@@ -9,5 +9,6 @@ data class Usuario(
     var contrasena: String? = null,
     var imagenContacto: String? = null,
     var latitud: String? = null,
-    var longitud: String? = null
+    var longitud: String? = null,
+    var disponibilidad: Boolean? = null,
 )

@@ -45,6 +45,12 @@ class PantallaPrincipal : AppCompatActivity() {
 //Abrir actividad para configuración etc
                 true
             }
+            R.id.menuListarUsuarios -> {
+                // Manejar la acción de la lista de usuarios disponibles
+                val intent = Intent(this, UserListActivity::class.java)
+                startActivity(intent)
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
