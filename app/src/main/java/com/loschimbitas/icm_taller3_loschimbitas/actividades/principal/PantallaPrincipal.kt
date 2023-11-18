@@ -22,6 +22,7 @@ class PantallaPrincipal : AppCompatActivity(), UsuariosConectados.UsuariosConect
 
     private lateinit var binding: ActivityPantallaPrincipalBinding
     private lateinit var auth: FirebaseAuth
+    var usuariosConectados = UsuariosConectados.getUsuarios()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +30,7 @@ class PantallaPrincipal : AppCompatActivity(), UsuariosConectados.UsuariosConect
         setContentView(binding.root)
         auth = Firebase.auth
 
-
+        UsuariosConectados.agregarObserver(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -86,14 +87,17 @@ class PantallaPrincipal : AppCompatActivity(), UsuariosConectados.UsuariosConect
         }
     }
 
-    override fun onUsuariosActualizados(usuarios: List<Usuario>) {
-        val nuevoUsuario = usuarios.last()
-
+    override fun onUsuariosActualizados() {
         // Mostrar un Toast para cada nuevo usuario
+        usuariosConectados = UsuariosConectados.getUsuarios()
         Toast.makeText(
             this,
-            "Nuevo usuario conectado: ${nuevoUsuario.nombreUsuario}",
+            "Usuarios actualizados: ${usuariosConectados.size}",
             Toast.LENGTH_SHORT
         ).show()
+
+        usuariosConectados.forEach() {
+            Log.i("UsuariosConectados", "nombre usuario: ${it.nombreUsuario}")
+        }
     }
 }

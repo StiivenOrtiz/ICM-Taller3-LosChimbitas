@@ -9,7 +9,12 @@ object UsuariosConectados {
     private val usuarios = mutableListOf<Usuario>()
     private var childEventListener: ChildEventListener? = null
 
+    fun getUsuarios(): List<Usuario> {
+        return usuarios.toList()
+    }
+
     init {
+        usuarios.clear()
         configurarChildEventListener()
     }
 
@@ -21,36 +26,42 @@ object UsuariosConectados {
                 usuario?.let {
                     usuarios.add(it)
                 }
-                Log.i("UsuariosConectados", "nombre usuario: ${usuario?.nombreUsuario}")
+                Log.i("UsuariosConectados1", "nombre usuario: ${usuario?.nombreUsuario}")
+                notificarObservadores()
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                // Usuario cambiado
                 val usuario = snapshot.getValue(Usuario::class.java)
-                usuario?.let {
-                    val index = usuarios.indexOfFirst {
-                        it.numeroAutenticacion == usuario.numeroAutenticacion }
-                    if (index != -1) {
-                        usuarios[index] = it
+                // Si el estado del usuario cambio a desconectado, eliminarlo de la lista
+                if (usuario?.estado == false) {
+                    usuarios.removeIf { usuarioLista ->
+                        usuarioLista.numeroAutenticacion == usuario.numeroAutenticacion
                     }
+
+                    Log.i("UsuariosConectados2",
+                        "Desconectado nombre usuario: ${usuario?.nombreUsuario}")
+                } else {
+                    // Si el estado del usuario cambio a conectado, agregarlo a la lista
+                    usuarios.add(usuario!!)
+                    Log.i("UsuariosConectados2",
+                        "Conectado nombre usuario: ${usuario?.nombreUsuario}")
                 }
-                Log.i("UsuariosConectados", "nombre usuario: ${usuario?.nombreUsuario}")
+                notificarObservadores()
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 // Usuario eliminado
                 val usuario = snapshot.getValue(Usuario::class.java)
-                usuario?.let {
-                    usuarios.remove(it)
+                usuarios.removeIf() { usuarioLista ->
+                    usuarioLista.numeroAutenticacion == usuario?.numeroAutenticacion
                 }
+                notificarObservadores()
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                // Usuario movido (no es necesario para este caso)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Manejar errores
             }
         }
 
@@ -67,7 +78,7 @@ object UsuariosConectados {
     private val observadores = mutableListOf<UsuariosConectadosObserver>()
 
     interface UsuariosConectadosObserver {
-        fun onUsuariosActualizados(usuarios: List<Usuario>)
+        fun onUsuariosActualizados()
     }
 
     fun agregarObserver(observer: UsuariosConectadosObserver) {
@@ -79,8 +90,9 @@ object UsuariosConectados {
     }
 
     private fun notificarObservadores() {
-        for (observer in observadores) {
-            observer.onUsuariosActualizados(usuarios.toList())
+        Log.i("UsuariosConectados", "Notificando observadores")
+        observadores.forEach {
+            it.onUsuariosActualizados()
         }
     }
 }
