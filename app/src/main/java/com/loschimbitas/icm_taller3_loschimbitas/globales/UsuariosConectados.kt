@@ -25,9 +25,9 @@ object UsuariosConectados {
                 val usuario = snapshot.getValue(Usuario::class.java)
                 if (usuario?.estado == true) {
                     usuarios.add(usuario)
+                    Log.i("UsuariosConectados1", "nombre usuario: ${usuario?.nombreUsuario}")
+                    notificarObservadores()
                 }
-                Log.i("UsuariosConectados1", "nombre usuario: ${usuario?.nombreUsuario}")
-                notificarObservadores()
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
