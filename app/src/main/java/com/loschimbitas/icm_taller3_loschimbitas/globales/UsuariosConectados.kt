@@ -64,7 +64,23 @@ object UsuariosConectados {
         }
     }
 
-    fun obtenerUsuarios(): List<Usuario> {
-        return usuarios.toList()
+    private val observadores = mutableListOf<UsuariosConectadosObserver>()
+
+    interface UsuariosConectadosObserver {
+        fun onUsuariosActualizados(usuarios: List<Usuario>)
+    }
+
+    fun agregarObserver(observer: UsuariosConectadosObserver) {
+        observadores.add(observer)
+    }
+
+    fun quitarObserver(observer: UsuariosConectadosObserver) {
+        observadores.remove(observer)
+    }
+
+    private fun notificarObservadores() {
+        for (observer in observadores) {
+            observer.onUsuariosActualizados(usuarios.toList())
+        }
     }
 }

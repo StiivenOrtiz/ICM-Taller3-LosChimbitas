@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -17,9 +18,8 @@ import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuarioAcual
 import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 
-class PantallaPrincipal : AppCompatActivity() {
+class PantallaPrincipal : AppCompatActivity(), UsuariosConectados.UsuariosConectadosObserver {
 
-    val listaUsuarios = UsuariosConectados.obtenerUsuarios()
     private lateinit var binding: ActivityPantallaPrincipalBinding
     private lateinit var auth: FirebaseAuth
 
@@ -29,12 +29,7 @@ class PantallaPrincipal : AppCompatActivity() {
         setContentView(binding.root)
         auth = Firebase.auth
 
-        val usuariosConectados = UsuariosConectados.obtenerUsuarios()
 
-        // imprimir en LOG los usuarios conectados
-        usuariosConectados.forEach {
-            Log.i("UsuarioActual", "nombre usuario: ${it.nombreUsuario}")
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -61,10 +56,22 @@ class PantallaPrincipal : AppCompatActivity() {
             }
 
             R.id.menuEstado -> {
-                if (UsuarioAcual.getEstadoUsuarioActual() == true)
+                if (UsuarioAcual.getEstadoUsuarioActual() == true) {
                     UsuarioAcual.setEstadoUsuarioActual(false)
-                else if (UsuarioAcual.getEstadoUsuarioActual() == false)
+                    Toast.makeText(
+                        this,
+                        "Estado cambiado a desconectado",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else if (UsuarioAcual.getEstadoUsuarioActual() == false) {
                     UsuarioAcual.setEstadoUsuarioActual(true)
+                    Toast.makeText(
+                        this,
+                        "Estado cambiado a conectado",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 true
             }
 
@@ -77,5 +84,16 @@ class PantallaPrincipal : AppCompatActivity() {
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onUsuariosActualizados(usuarios: List<Usuario>) {
+        val nuevoUsuario = usuarios.last()
+
+        // Mostrar un Toast para cada nuevo usuario
+        Toast.makeText(
+            this,
+            "Nuevo usuario conectado: ${nuevoUsuario.nombreUsuario}",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
