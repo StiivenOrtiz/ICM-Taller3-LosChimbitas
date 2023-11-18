@@ -166,13 +166,15 @@ class Registro : AppCompatActivity() {
 
         UsuarioAcual.setUsuario(
             Usuario(
-                numeroAutenticacion = auth.currentUser?.uid,
-                nombreUsuario = binding.editTextNombreUsuario.text.toString().lowercase(),
-                nombre = binding.editTextNombre.text.toString(),
-                apellido = binding.editTextApellido.text.toString(),
-                correo = binding.editTextCorreo.text.toString().lowercase(),
-                imagenContacto = urlImagenUser,
-                latitud = 0.0, longitud = 0.0
+                auth.currentUser?.uid,
+                binding.editTextNombreUsuario.text.toString().lowercase(),
+                binding.editTextNombre.text.toString(),
+                binding.editTextApellido.text.toString(),
+                binding.editTextCorreo.text.toString().lowercase(),
+                urlImagenUser,
+                false,
+                0.0,
+                0.0
             )
         )
 
