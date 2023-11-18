@@ -18,7 +18,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -31,6 +33,7 @@ import com.loschimbitas.icm_taller3_loschimbitas.globales.UsuariosConectados
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 import com.loschimbitas.icm_taller3_loschimbitas.util.TrackerLocation
 import org.json.JSONObject
+import kotlin.math.roundToInt
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados.UsuariosConectadosObserver {
 
@@ -39,6 +42,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
     private lateinit var auth: FirebaseAuth
     var usuariosConectados = UsuariosConectados.getUsuarios()
     private lateinit var trackerLocation: TrackerLocation
+
+
+    //    Trackeo con marcador
+    private var currentUserLocationMarker: Marker? = null
+    // fin trackeo con marcador
+
+    companion object {
+        val RADIUS_OF_EARTH_KM = 6371
+    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,6 +116,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
             R.id.menuListarUsuarios -> {
                 // Manejar la acción de la lista de usuarios disponibles
                 val intent = Intent(this, UserListActivity::class.java)
+                UsuariosConectados.quitarObserver(this)
+                trackerLocation.stopLocationUpdates()
                 startActivity(intent)
                 return true
             }
@@ -186,6 +201,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
         }
     }
 
+    private fun marcadorTrackeado(latitudGlobal: Double, longitudGlobal: Double) {
+        if (currentUserLocationMarker != null) {
+            currentUserLocationMarker?.remove()
+        }
+        val latLng = LatLng(latitudGlobal, longitudGlobal)
+        val markerOptions = MarkerOptions()
+        markerOptions.position(latLng)
+        markerOptions.title("Ubicación Actual")
+        markerOptions.draggable(true)
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+        currentUserLocationMarker = mMap.addMarker(markerOptions)
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+        mMap.animateCamera(CameraUpdateFactory.zoomBy(12f))
+    }
+
     private fun trackUser(){
         trackerLocation = ViewModelProvider(this)[TrackerLocation::class.java]
 
@@ -194,6 +224,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
             // Actualizar en el mapa la posición del usuario
 //            updateLocation(location)
             UsuarioAcual.setLatitudLongitud(location.latitude, location.longitude)
+            marcadorTrackeado(location.latitude, location.longitude)
         }
     }
 
@@ -202,12 +233,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, UsuariosConectados
         usuariosConectados = UsuariosConectados.getUsuarios()
         Toast.makeText(
             this,
-            "Usuarios actualizados: ${usuariosConectados.size}",
+            "Usuario conectado ${usuariosConectados.last().nombreUsuario}",
             Toast.LENGTH_SHORT
         ).show()
 
         usuariosConectados.forEach() {
             Log.i("UsuariosConectados", "nombre usuario: ${it.nombreUsuario}")
         }
+    }
+
+    private fun calculoDistancia(
+        latitudGlobal: Double,
+        longitudGlobal: Double,
+        latitudGlobalTemp: Double,
+        longitudGlobalTemp: Double
+    ): Double {
+        val latDistance = Math.toRadians(latitudGlobal - latitudGlobalTemp)
+        val lngDistance = Math.toRadians(longitudGlobal - longitudGlobalTemp)
+        val a = (Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(latitudGlobal)) * Math.cos(
+            Math.toRadians(
+                latitudGlobalTemp
+            )
+        )
+                * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2))
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        val result = RADIUS_OF_EARTH_KM * c
+        // Distancia en metros
+        return (result * 100.0).roundToInt() / 100.0
     }
 }

@@ -54,7 +54,7 @@ class UserListAdapter(private val context: Context, private val userList: List<U
 
         viewHolder.btnCurrentUserLocation.setOnClickListener {
 
-            // pendiente hacer lo de la ubicacion
+
 
         }
 
