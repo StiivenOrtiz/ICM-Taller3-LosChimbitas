@@ -2,7 +2,6 @@ package com.loschimbitas.icm_taller3_loschimbitas
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -53,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(auth.currentUser!=null)
+        if (auth.currentUser != null)
             updateUI(auth.currentUser)
     }
 

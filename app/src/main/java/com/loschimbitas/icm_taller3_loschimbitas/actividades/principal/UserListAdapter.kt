@@ -4,15 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.view.ViewGroup
 import com.loschimbitas.icm_taller3_loschimbitas.R
 import com.loschimbitas.icm_taller3_loschimbitas.modelo.Usuario
 
-class UserListAdapter(private val context: Context, private val userList: List<Usuario>) : BaseAdapter() {
+class UserListAdapter(private val context: Context, private val userList: List<Usuario>) :
+    BaseAdapter() {
 
     override fun getCount(): Int {
         return userList.size
@@ -33,7 +34,8 @@ class UserListAdapter(private val context: Context, private val userList: List<U
 
         if (convertView == null) {
             view = LayoutInflater.from(context).inflate(
-                R.layout.list_item_user, parent, false)
+                R.layout.list_item_user, parent, false
+            )
             viewHolder = ViewHolder(
                 view.findViewById(R.id.imageViewUser),
                 view.findViewById(R.id.textViewUserName),

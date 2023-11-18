@@ -42,7 +42,7 @@ object UsuarioAcual {
 
                 Toast.makeText(
                     context,
-                    "Bienvenido de nuevo ${UsuarioAcual.getUsuario().nombreUsuario}",
+                    "Bienvenido de nuevo ${getUsuario().nombreUsuario}",
                     Toast.LENGTH_LONG
                 ).show()
             } else
