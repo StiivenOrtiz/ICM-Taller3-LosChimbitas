@@ -33,20 +33,29 @@ object UsuariosConectados {
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 val usuario = snapshot.getValue(Usuario::class.java)
                 // Si el estado del usuario cambio a desconectado, eliminarlo de la lista
-                if (usuario?.estado == false) {
-                    usuarios.removeIf { usuarioLista ->
-                        usuarioLista.numeroAutenticacion == usuario.numeroAutenticacion
-                    }
+                var actualizo = false
 
-                    Log.i("UsuariosConectados2",
-                        "Desconectado nombre usuario: ${usuario?.nombreUsuario}")
-                } else {
-                    // Si el estado del usuario cambio a conectado, agregarlo a la lista
-                    usuarios.add(usuario!!)
-                    Log.i("UsuariosConectados2",
-                        "Conectado nombre usuario: ${usuario?.nombreUsuario}")
+                usuario?.let { u ->
+                    usuarios.find { it.numeroAutenticacion == u.numeroAutenticacion }?.let {
+                            usuarioLista ->
+                        if (usuarioLista.estado != u.estado) {
+                            if (u.estado == false) {
+                                usuarios.remove(usuarioLista)
+                                Log.i("UsuariosConectados2",
+                                    "Desconectado nombre usuario: ${usuario.nombreUsuario}")
+                                actualizo = true
+                            } else if (usuario.estado == true) {
+                                usuarios.add(u)
+                                Log.i("UsuariosConectados2",
+                                    "Conectado nombre usuario: ${usuario.nombreUsuario}")
+                                actualizo = true
+                            }
+                        }
+                    }
                 }
-                notificarObservadores()
+                
+                if (actualizo)
+                    notificarObservadores()
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
